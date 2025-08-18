@@ -13,61 +13,22 @@
     <input type="text" id="description" placeholder="Mô tả">
     <button id="add">Thêm sản phẩm</button>
 
-    <h2>Danh sách hiện tại</h2>
-    <pre id="data"></pre>
-
     <script>
-        const token = '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';
-        const owner = 'duocifv';
-        const repo = 'static-app';
-        const path = 'products.json';
-        let sha = ''; // SHA của file để update
-        let products = [];
-
-        // Load products hiện tại và SHA
-        fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`)
-            .then(res => res.json())
-            .then(data => {
-                products = JSON.parse(atob(data.content));
-                sha = data.sha;
-                document.getElementById('data').textContent = JSON.stringify(products, null, 2);
-            });
-
-        document.getElementById('add').addEventListener('click', () => {
+        document.getElementById('add').addEventListener('click', async () => {
             const name = document.getElementById('name').value;
             const price = parseInt(document.getElementById('price').value);
             const description = document.getElementById('description').value;
 
-            const id = products.length ? products[products.length - 1].id + 1 : 1;
-            const newProduct = { id, name, price, description };
-            products.push(newProduct);
+            const newProduct = { id: Date.now(), name, price, description };
 
-            const content = btoa(JSON.stringify(products, null, 2));
+            // Gọi workflow dispatch qua server proxy (Node.js/Express)
+            await fetch('/dispatch-workflow', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ content: JSON.stringify([newProduct]) })
+            });
 
-            fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`, {
-                method: 'PUT',
-                headers: {
-                    Authorization: `token ${token}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    message: `Add product ${name}`,
-                    content: content,
-                    sha: sha
-                })
-            })
-                .then(res => res.json())
-                .then(data => {
-                    sha = data.content.sha; // cập nhật SHA mới
-                    document.getElementById('data').textContent = JSON.stringify(products, null, 2);
-                    alert('Đã update sản phẩm lên GitHub!');
-                })
-                .catch(err => console.error(err));
-
-            // Reset input
-            document.getElementById('name').value = '';
-            document.getElementById('price').value = '';
-            document.getElementById('description').value = '';
+            alert('Đã gửi sản phẩm lên GitHub workflow!');
         });
     </script>
 </body>

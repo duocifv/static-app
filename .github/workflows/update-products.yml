@@ -1,0 +1,24 @@
+name: Update products
+
+on:
+  workflow_dispatch:
+    inputs:
+      content:
+        description: "New products JSON"
+        required: true
+
+jobs:
+  update-json:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Update products.json
+        run: |
+          printf '%s' '${{ github.event.inputs.content }}' > products.json
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add products.json
+          git commit -m "Update products.json via workflow"
+          git push https://${{ secrets.GH_PAT }}@github.com/${{ github.repository }}.git
