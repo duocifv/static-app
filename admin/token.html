@@ -1,30 +1,24 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
-    <title>Set localStorage</title>
+    <title>Save Token</title>
 </head>
 
 <body>
-    <button onclick="setToken()">Lưu Token</button>
-    <button onclick="getToken()">Xem Token</button>
-    <button onclick="removeToken()">Xoá Token</button>
+    <input id="tokenInput" type="text" placeholder="Nhập token..." />
+    <button onclick="saveToken()">Lưu token</button>
 
     <script>
-        function setToken() {
-            localStorage.setItem("token", "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");
-            alert("Token đã được lưu vào localStorage!");
-        }
-
-        function getToken() {
-            const token = localStorage.getItem("token");
-            alert("Token hiện tại: " + (token || "chưa có"));
-        }
-
-        function removeToken() {
-            localStorage.removeItem("token");
-            alert("Token đã bị xoá!");
+        function saveToken() {
+            const token = document.getElementById("tokenInput").value;
+            if (token) {
+                localStorage.setItem("ghp_token", token);
+                alert("Token đã được lưu!");
+            } else {
+                alert("Vui lòng nhập token!");
+            }
         }
     </script>
 </body>
