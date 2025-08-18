@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Static Admin</title>
+</head>
+
+<body>
+    <h1>Quản lý sản phẩm</h1>
+
+    <input type="text" id="name" placeholder="Tên sản phẩm">
+    <input type="text" id="price" placeholder="Giá">
+    <input type="text" id="description" placeholder="Mô tả">
+    <button id="add">Thêm sản phẩm</button>
+
+    <h2>Danh sách hiện tại</h2>
+    <pre id="data"></pre>
+
+    <script>
+        let products = [];
+
+        fetch('products.json')
+            .then(res => res.json())
+            .then(json => {
+                products = json;
+                document.getElementById('data').textContent = JSON.stringify(products, null, 2);
+            });
+
+        document.getElementById('add').addEventListener('click', () => {
+            const name = document.getElementById('name').value;
+            const price = parseInt(document.getElementById('price').value);
+            const description = document.getElementById('description').value;
+
+            const id = products.length ? products[products.length - 1].id + 1 : 1;
+            const newProduct = { id, name, price, description };
+            products.push(newProduct);
+
+            document.getElementById('data').textContent = JSON.stringify(products, null, 2);
+
+            // Tải file JSON về
+            const blob = new Blob([JSON.stringify(products, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'products.json';
+            a.click();
+            URL.revokeObjectURL(url);
+
+            document.getElementById('name').value = '';
+            document.getElementById('price').value = '';
+            document.getElementById('description').value = '';
+        });
+    </script>
+</body>
+
+</html>
