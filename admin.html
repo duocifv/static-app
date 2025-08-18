@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>Static Admin</title>
+    <title>Static Admin GitHub</title>
 </head>
 
 <body>
@@ -17,12 +17,19 @@
     <pre id="data"></pre>
 
     <script>
+        const token = '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';
+        const owner = 'duocifv';
+        const repo = 'static-app';
+        const path = 'products.json';
+        let sha = ''; // SHA của file để update
         let products = [];
 
-        fetch('products.json')
+        // Load products hiện tại và SHA
+        fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`)
             .then(res => res.json())
-            .then(json => {
-                products = json;
+            .then(data => {
+                products = JSON.parse(atob(data.content));
+                sha = data.sha;
                 document.getElementById('data').textContent = JSON.stringify(products, null, 2);
             });
 
@@ -35,17 +42,29 @@
             const newProduct = { id, name, price, description };
             products.push(newProduct);
 
-            document.getElementById('data').textContent = JSON.stringify(products, null, 2);
+            const content = btoa(JSON.stringify(products, null, 2));
 
-            // Tải file JSON về
-            const blob = new Blob([JSON.stringify(products, null, 2)], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'products.json';
-            a.click();
-            URL.revokeObjectURL(url);
+            fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`, {
+                method: 'PUT',
+                headers: {
+                    Authorization: `token ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    message: `Add product ${name}`,
+                    content: content,
+                    sha: sha
+                })
+            })
+                .then(res => res.json())
+                .then(data => {
+                    sha = data.content.sha; // cập nhật SHA mới
+                    document.getElementById('data').textContent = JSON.stringify(products, null, 2);
+                    alert('Đã update sản phẩm lên GitHub!');
+                })
+                .catch(err => console.error(err));
 
+            // Reset input
             document.getElementById('name').value = '';
             document.getElementById('price').value = '';
             document.getElementById('description').value = '';
