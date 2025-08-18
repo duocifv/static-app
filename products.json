@@ -1,19 +1,25 @@
 [
   {
     "id": 1,
-    "name": "Sáº£n pháº©m demo",
+    "name": "SÃ¡ÂºÂ£n phÃ¡ÂºÂ©m demo",
     "price": 100000,
-    "description": "MÃ´ táº£ ban Ä‘áº§u"
+    "description": "MÃƒÂ´ tÃ¡ÂºÂ£ ban Ã„â€˜Ã¡ÂºÂ§u"
   },
   {
     "id": 1755487701664,
     "name": "sdsa",
     "price": 0,
-    "description": "ádsad"
+    "description": "Ã¡dsad"
   },
   {
     "id": 1755487743104,
-    "name": "qu�n",
+    "name": "quân",
+    "price": 5,
+    "description": "ád"
+  },
+  {
+    "id": 1755487765280,
+    "name": "�o 3",
     "price": 5,
     "description": "�d"
   }
