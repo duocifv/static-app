@@ -1,14 +1,20 @@
 [
   {
     "id": 1,
-    "name": "Sản phẩm demo",
+    "name": "Sáº£n pháº©m demo",
     "price": 100000,
-    "description": "Mô tả ban đầu"
+    "description": "MÃ´ táº£ ban Ä‘áº§u"
   },
   {
     "id": 1755487701664,
     "name": "sdsa",
     "price": 0,
-    "description": "�dsad"
+    "description": "ádsad"
+  },
+  {
+    "id": 1755487743104,
+    "name": "qu�n",
+    "price": 5,
+    "description": "�d"
   }
 ]
