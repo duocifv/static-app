@@ -11,15 +11,19 @@
     <div id="products"></div>
 
     <script>
-        fetch("products.json")
+        fetch("products.json?t=" + Date.now()) // luôn unique
             .then(res => res.json())
             .then(products => {
                 const div = document.getElementById("products");
+                div.innerHTML = "";
                 products.forEach(p => {
-                    div.innerHTML += `<h2>${p.name}</h2><p>${p.description}</p><p>Giá: ${p.price} VND</p>`;
+                    div.innerHTML += `<h2>${p.name}</h2>
+                                  <p>${p.description}</p>
+                                  <p>Giá: ${p.price} VND</p>`;
                 });
             });
     </script>
+
 </body>
 
 </html>
