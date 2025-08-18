@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html lang="vi">
 
 <head>
-    <title>Landing Page Demo</title>
+    <meta charset="UTF-8">
+    <title>Landing Page</title>
 </head>
 
 <body>
@@ -10,14 +11,12 @@
     <div id="products"></div>
 
     <script>
-        fetch('products.json')
+        fetch("products.json")
             .then(res => res.json())
             .then(products => {
-                const container = document.getElementById('products');
+                const div = document.getElementById("products");
                 products.forEach(p => {
-                    const div = document.createElement('div');
-                    div.innerHTML = `<h2>${p.name}</h2><p>${p.description}</p><p>Giá: ${p.price} VND</p>`;
-                    container.appendChild(div);
+                    div.innerHTML += `<h2>${p.name}</h2><p>${p.description}</p><p>Giá: ${p.price} VND</p>`;
                 });
             });
     </script>

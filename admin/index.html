@@ -1,15 +1,93 @@
 <!DOCTYPE html>
-<html>
+<html lang="vi">
 
 <head>
     <meta charset="UTF-8">
-    <title>CMS Admin</title>
-    <script src="https://unpkg.com/decap-cms@latest/dist/decap-cms.js"></script>
+    <title>Admin CRUD</title>
 </head>
 
 <body>
+    <h1>Quản lý sản phẩm</h1>
+    <button onclick="login()">Login GitHub</button>
+
+    <h2>Danh sách</h2>
+    <ul id="list"></ul>
+
+    <h2>Thêm sản phẩm</h2>
+    <input id="name" placeholder="Tên">
+    <input id="price" type="number" placeholder="Giá">
+    <input id="description" placeholder="Mô tả">
+    <button onclick="add()">Thêm</button>
+
     <script>
-        CMS.init();
+        const CLIENT_ID = "Ov23lis7ijiSkKKgc5IJ";
+        const CLIENT_SECRET = "7aa5c46fe2f9d0fb62e30f140c1babeefc4d170a";
+        const OWNER = "duocifv";
+        const REPO = "static-app";
+        const PATH = "products.json";
+        let token = localStorage.getItem("gh_token");
+        let sha = "";
+        let products = [];
+
+        window.onload = () => {
+            if (token) fetchData();
+        };
+
+        function login() {
+            if (!token) {
+                window.location = `https://github.com/login/oauth/authorize?client_id=${CLIENT_ID}&scope=repo&redirect_uri=${location.origin}/static-app/admin/callback.html`;
+            } else {
+                localStorage.removeItem("gh_token");
+                location.reload();
+            }
+        }
+
+        async function fetchData() {
+            const res = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/contents/${PATH}`, {
+                headers: { Authorization: `token ${token}` }
+            });
+            const json = await res.json();
+            products = JSON.parse(atob(json.content));
+            sha = json.sha;
+            render();
+        }
+
+        function render() {
+            document.getElementById("list").innerHTML = products.map(
+                p => `<li>${p.name} - ${p.price}đ <button onclick="del(${p.id})">Xóa</button></li>`
+            ).join("");
+        }
+
+        async function commit(data, message) {
+            const res = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/contents/${PATH}`, {
+                method: "PUT",
+                headers: {
+                    Authorization: `token ${token}`,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    message,
+                    content: btoa(JSON.stringify(data, null, 2)),
+                    sha
+                })
+            });
+            const json = await res.json();
+            sha = json.content.sha;
+            fetchData();
+        }
+
+        function add() {
+            const name = document.getElementById("name").value;
+            const price = +document.getElementById("price").value;
+            const description = document.getElementById("description").value;
+            products.push({ id: Date.now(), name, price, description });
+            commit(products, "Add product " + name);
+        }
+
+        function del(id) {
+            products = products.filter(p => p.id !== id);
+            commit(products, "Delete product " + id);
+        }
     </script>
 </body>
 
