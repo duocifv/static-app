@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Admin CRUD</title>
+    <script src="./config.js"></script>
 </head>
 
 <body>
@@ -25,7 +26,7 @@
         const OWNER = "duocifv";
         const REPO = "static-app";
         const PATH = "products.json";
-        let token = localStorage.getItem("gh_token");
+        let token = window.GH_TOKEN;
         let sha = "";
         let products = [];
 
