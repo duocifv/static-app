@@ -1,9 +1,7 @@
 backend:
   name: github
-  repo: duocifv/static-app # đổi thành username/repo của bạn
-  branch: main
-  base_url: https://api.netlify.com # hoặc dùng Netlify Identity miễn phí
-  auth_endpoint: auth
+  repo: duocifv/static-app   # thay bằng username/repo thật
+  branch: main               # hoặc master nếu repo bạn dùng master
 
 media_folder: "images/uploads"
 public_folder: "/images/uploads"
