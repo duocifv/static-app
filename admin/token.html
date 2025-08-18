@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Set localStorage</title>
+</head>
+
+<body>
+    <button onclick="setToken()">Lưu Token</button>
+    <button onclick="getToken()">Xem Token</button>
+    <button onclick="removeToken()">Xoá Token</button>
+
+    <script>
+        function setToken() {
+            localStorage.setItem("token", "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");
+            alert("Token đã được lưu vào localStorage!");
+        }
+
+        function getToken() {
+            const token = localStorage.getItem("token");
+            alert("Token hiện tại: " + (token || "chưa có"));
+        }
+
+        function removeToken() {
+            localStorage.removeItem("token");
+            alert("Token đã bị xoá!");
+        }
+    </script>
+</body>
+
+</html>
