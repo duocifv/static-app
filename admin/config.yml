@@ -1,0 +1,19 @@
+backend:
+  name: github
+  repo: duocifv/static-app # đổi thành username/repo của bạn
+  branch: main
+  base_url: https://api.netlify.com # hoặc dùng Netlify Identity miễn phí
+  auth_endpoint: auth
+
+media_folder: "images/uploads"
+public_folder: "/images/uploads"
+
+collections:
+  - name: "products"
+    label: "Sản phẩm"
+    file: "products.json"
+    fields:
+      - { label: "ID", name: "id", widget: "number" }
+      - { label: "Tên sản phẩm", name: "name", widget: "string" }
+      - { label: "Giá", name: "price", widget: "number" }
+      - { label: "Mô tả", name: "description", widget: "text" }
