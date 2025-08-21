@@ -14,7 +14,7 @@ export default function App() {
     const [formOpen, setFormOpen] = useState(false)
 
     const createMut = useMutation({
-        mutationFn: ({ title, content }) => createPost({ title, content }),
+        mutationFn: ({ title, content, image_base64 }) => createPost({ title, content, image_base64 }),
         onMutate: async (vars) => {
             await qc.cancelQueries({ queryKey: ['posts'] })
             const prev = qc.getQueryData(['posts']) || posts
@@ -36,7 +36,7 @@ export default function App() {
     })
 
     const updateMut = useMutation({
-        mutationFn: ({ id, title, content }) => updatePost({ id, title, content }),
+        mutationFn: ({ id, title, content, image_base64 }) => updatePost({ id, title, content, image_base64 }),
         onMutate: async (vars) => {
             await qc.cancelQueries({ queryKey: ['posts'] })
             const prev = qc.getQueryData(['posts']) || posts
@@ -68,9 +68,9 @@ export default function App() {
 
     function handleSubmit(payload) {
         if (editing && editing.id != null) {
-            updateMut.mutate({ id: editing.id, title: payload.title, content: payload.content })
+            updateMut.mutate({ id: editing.id, title: payload.title, content: payload.content, image_base64: payload.image_base64 })
         } else {
-            createMut.mutate({ title: payload.title, content: payload.content })
+            createMut.mutate({ title: payload.title, content: payload.content, image_base64: payload.image_base64 })
         }
         setFormOpen(false)
         setEditing(null)

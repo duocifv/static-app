@@ -1,5 +1,5 @@
 // api.js
-const API_URL = 'https://script.google.com/macros/s/AKfycbxcD-3GiXwM7YnKrzgAh9ymVlWCo_dGPDfWnUhppQllhlqMta6acmPCtXDLB1qfDll1/exec';
+const API_URL = 'https://script.google.com/macros/s/AKfycby0_n6NvINhxCS55ejf3Ik2w_s2aBt2wEDAohd1ZQiOBrJLI4ZmUAZQfYvgHLE04bwb/exec';
 
 function encodeForm(data) {
   return Object.keys(data)
@@ -8,16 +8,32 @@ function encodeForm(data) {
 }
 
 async function doPostRequestForm(payload, errorMsg) {
+  // encode Base64 riêng trước
+  if (payload.image_base64) {
+    payload.image_base64 = encodeURIComponent(payload.image_base64);
+  }
+
   const res = await fetch(API_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     body: encodeForm(payload),
   });
-  if (!res.ok) {
-    throw new Error(`${errorMsg}: ${res.status} ${res.statusText}`);
-  }
+
+  if (!res.ok) throw new Error(`${errorMsg}: ${res.status} ${res.statusText}`);
   return await res.json();
 }
+
+// async function doPostRequestForm(payload, errorMsg) {
+//   const res = await fetch(API_URL, {
+//     method: 'POST',
+//     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+//     body: encodeForm(payload),
+//   });
+//   if (!res.ok) {
+//     throw new Error(`${errorMsg}: ${res.status} ${res.statusText}`);
+//   }
+//   return await res.json();
+// }
 
 export async function fetchPosts({ signal } = {}) {
   const res = await fetch(API_URL, { signal });
@@ -26,16 +42,36 @@ export async function fetchPosts({ signal } = {}) {
   return Array.isArray(json?.data) ? json.data : [];
 }
 
-export async function createPost({ title, content }) {
-  return doPostRequestForm({ action: 'create', title, content }, 'Create failed');
+export async function createPost({ title, content, image_base64 }) {
+  console.log("title, content, imageBase64", title, content, image_base64)
+  return doPostRequestForm(
+    { action: 'create', title, content, image_base64 },
+    'Create failed'
+  );
 }
 
-export async function updatePost({ id, title, content }) {
-  return doPostRequestForm({ action: 'update', id, title, content }, 'Update failed');
+export async function updatePost({ id, title, content, image_base64 }) {
+  return doPostRequestForm(
+    { action: 'update', id, title, content, image_base64 },
+    'Update failed'
+  );
 }
 
 export async function deletePost({ id }) {
   return doPostRequestForm({ action: 'delete', id }, 'Delete failed');
+}
+
+// --- Helper: convert file -> Base64 ---
+export function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => {
+      const base64 = reader.result.split(',')[1]; // giữ phần Base64
+      resolve(base64);
+    };
+    reader.onerror = reject;
+  });
 }
 
 export { API_URL };
